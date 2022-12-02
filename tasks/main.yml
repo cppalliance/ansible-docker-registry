@@ -1,0 +1,54 @@
+---
+- name: install packages
+  package:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items: "{{ docker_registry_packages }}"
+
+- name: Remove default vhost
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Install registry vhost
+  ansible.builtin.template:
+    src: registry.vhost.j2
+    dest: /etc/nginx/sites-available/registry
+    owner: root
+    group: root
+    mode: '0755'
+  notify: restart nginx
+
+- name: Create a symbolic link
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/registry
+    dest: /etc/nginx/sites-enabled/registry
+    owner: root
+    group: root
+    state: link
+  notify: restart nginx
+
+- name: Create directory for drone
+  ansible.builtin.file:
+    dest: /opt/drone/scripts
+    owner: root
+    group: root
+    state: directory
+
+- name: Create directory for registry data
+  ansible.builtin.file:
+    dest: /data
+    owner: root
+    group: root
+    state: directory
+
+- name: Install script to start docker
+  ansible.builtin.template:
+    src: startregistry.sh.j2
+    dest: /opt/drone/scripts/startregistry.sh
+    owner: root
+    group: root
+    mode: '0755'
+  notify: start registry
+

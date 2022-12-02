@@ -1,0 +1,9 @@
+---
+docker_registry_packages:
+  - docker.io
+  - nginx
+  - ssl-cert
+  - nload
+  - tree
+
+docker_registry_storage_fs_root_directory_on_host: /data

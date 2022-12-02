@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if ! /usr/bin/docker ps | grep registry >/dev/null ; then
+    docker run -d \
+      -p 5000:5000 \
+      --restart=always \
+      --name registry \
+      -v {{ docker_registry_storage_fs_root_directory_on_host }}:/var/lib/registry \
+      -e REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io \
+      registry:2
+fi

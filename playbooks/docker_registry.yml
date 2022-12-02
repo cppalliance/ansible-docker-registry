@@ -1,0 +1,5 @@
+---
+- hosts: docker_registry
+  become: true
+  roles:
+    - cppalliance.docker_registry

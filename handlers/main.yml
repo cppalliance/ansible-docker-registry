@@ -1,0 +1,8 @@
+---
+- name: restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+
+- name: start registry
+  ansible.builtin.command: /opt/drone/scripts/startregistry.sh
